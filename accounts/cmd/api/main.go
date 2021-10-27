@@ -10,9 +10,7 @@ import (
 func main() {
 
 	app := fiber.New()
-	accountHandler := web.AccountHandler{
-		CreateService: usecase.CreateAccountUseCase{},
-	}
+	accountHandler := web.NewAccountHandler(usecase.NewCreateAccountUseCase())
 
 	app.Post("/accounts", accountHandler.CreateAccount)
 	app.Get("/accounts/:id", accountHandler.GetAccount)

@@ -6,13 +6,19 @@ import (
 	"math/rand"
 )
 
-//CreateAccountUseCase receives a creation request and return a response
-type CreateAccountUseCase struct {
-}
+type (
+	//CreateAccountUseCase receives a creation request and return a response
+	CreateAccountUseCase struct{}
 
-//CreateAccountRequest is the request object to be used in the CreateAccountUseCase
-type CreateAccountRequest struct {
-	DocumentNumber string
+	//CreateAccountRequest is the request object to be used in the CreateAccountUseCase
+	CreateAccountRequest struct {
+		DocumentNumber string
+	}
+)
+
+//NewCreateAccountUseCase builds CreateAccountUseCase with its dependencies
+func NewCreateAccountUseCase() CreateAccountUseCase {
+	return CreateAccountUseCase{}
 }
 
 //Call performs the account creation use case

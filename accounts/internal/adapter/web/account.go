@@ -7,10 +7,10 @@ import (
 	"net/http"
 )
 
-//AccountHandler deals with http/https requests made to account domain
 type (
+	//AccountHandler deals with http/https requests made to account domain
 	AccountHandler struct {
-		CreateService usecase.CreateAccountUseCase
+		createAccountUseCase usecase.CreateAccountUseCase
 	}
 
 	creationPayload struct {
@@ -23,6 +23,13 @@ type (
 	}
 )
 
+//NewAccountHandler builds AccountHandler instance with its dependencies
+func NewAccountHandler(createAccountUseCase usecase.CreateAccountUseCase) AccountHandler {
+	return AccountHandler{
+		createAccountUseCase: createAccountUseCase,
+	}
+}
+
 //CreateAccount creates an account
 func (h AccountHandler) CreateAccount(c *fiber.Ctx) error {
 	payload := creationPayload{}
@@ -34,7 +41,7 @@ func (h AccountHandler) CreateAccount(c *fiber.Ctx) error {
 		})
 	}
 
-	account, err := h.CreateService.Call(usecase.CreateAccountRequest{DocumentNumber: payload.DocumentNumber})
+	account, err := h.createAccountUseCase.Call(usecase.CreateAccountRequest{DocumentNumber: payload.DocumentNumber})
 
 	if err != nil {
 		return err
