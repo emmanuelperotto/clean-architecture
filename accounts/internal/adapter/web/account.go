@@ -14,12 +14,12 @@ type (
 	}
 
 	creationPayload struct {
-		DocumentNumber string `json:"documentNumber"`
+		DocumentNumber string `json:"document_number"`
 	}
 
 	creationPresenter struct {
 		Id             int64  `json:"id"`
-		DocumentNumber string `json:"documentNumber"`
+		DocumentNumber string `json:"document_number"`
 	}
 )
 

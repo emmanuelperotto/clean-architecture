@@ -2,13 +2,15 @@ package usecase
 
 import (
 	"accounts/internal/domain/entity"
+	"accounts/internal/domain/repository"
 	"errors"
-	"math/rand"
 )
 
 type (
 	//CreateAccountUseCase receives a creation request and return a response
-	CreateAccountUseCase struct{}
+	CreateAccountUseCase struct {
+		accountRepository repository.Account
+	}
 
 	//CreateAccountRequest is the request object to be used in the CreateAccountUseCase
 	CreateAccountRequest struct {
@@ -17,8 +19,8 @@ type (
 )
 
 //NewCreateAccountUseCase builds CreateAccountUseCase with its dependencies
-func NewCreateAccountUseCase() CreateAccountUseCase {
-	return CreateAccountUseCase{}
+func NewCreateAccountUseCase(accountRepository repository.Account) CreateAccountUseCase {
+	return CreateAccountUseCase{accountRepository: accountRepository}
 }
 
 //Call performs the account creation use case
@@ -28,9 +30,8 @@ func (c CreateAccountUseCase) Call(request CreateAccountRequest) (entity.Account
 	}
 
 	account := entity.Account{
-		Id:             rand.Int63(),
 		DocumentNumber: request.DocumentNumber,
 	}
 
-	return account, nil
+	return c.accountRepository.Save(account)
 }
