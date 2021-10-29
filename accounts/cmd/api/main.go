@@ -9,10 +9,14 @@ import (
 )
 
 func main() {
-
 	app := fiber.New()
-	accountRepository := local.NewAccountRepository()
-	accountHandler := web.NewAccountHandler(usecase.NewCreateAccountUseCase(accountRepository))
+	accountWriteOnlyRepository := local.NewAccountWriteOnlyRepository()
+	accountReadOnlyRepository := local.NewAccountReadOnlyRepository()
+
+	accountHandler := web.NewAccountHandler(
+		usecase.NewCreateAccountUseCase(accountWriteOnlyRepository),
+		usecase.NewGetAccountUseCase(accountReadOnlyRepository),
+	)
 
 	app.Post("/accounts", accountHandler.CreateAccount)
 	app.Get("/accounts/:id", accountHandler.GetAccount)

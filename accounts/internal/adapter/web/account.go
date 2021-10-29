@@ -11,22 +11,25 @@ type (
 	//AccountHandler deals with http/https requests made to account domain
 	AccountHandler struct {
 		createAccountUseCase usecase.CreateAccountUseCase
+		getAccountUseCase    usecase.GetAccountUseCase
 	}
 
 	creationPayload struct {
 		DocumentNumber string `json:"document_number"`
 	}
 
-	creationPresenter struct {
+	presenter struct {
 		Id             int64  `json:"id"`
 		DocumentNumber string `json:"document_number"`
 	}
 )
 
 //NewAccountHandler builds AccountHandler instance with its dependencies
-func NewAccountHandler(createAccountUseCase usecase.CreateAccountUseCase) AccountHandler {
+func NewAccountHandler(createAccountUseCase usecase.CreateAccountUseCase,
+	getAccountUseCase usecase.GetAccountUseCase) AccountHandler {
 	return AccountHandler{
 		createAccountUseCase: createAccountUseCase,
+		getAccountUseCase:    getAccountUseCase,
 	}
 }
 
@@ -44,15 +47,17 @@ func (h AccountHandler) CreateAccount(c *fiber.Ctx) error {
 	account, err := h.createAccountUseCase.Call(usecase.CreateAccountRequest{DocumentNumber: payload.DocumentNumber})
 
 	if err != nil {
-		return err
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"error": err.Error(),
+		})
 	}
 
-	presenter := creationPresenter{
+	p := presenter{
 		Id:             account.Id,
 		DocumentNumber: account.DocumentNumber,
 	}
 
-	return c.Status(http.StatusCreated).JSON(presenter)
+	return c.Status(http.StatusCreated).JSON(p)
 }
 
 //GetAccount gets an account by a given id query param
@@ -60,12 +65,21 @@ func (h AccountHandler) GetAccount(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "id param is not a number",
+			"error": "Id param is not a number",
 		})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"id":             id,
-		"documentNumber": "1234565",
-	})
+	account, err := h.getAccountUseCase.ById(int64(id))
+	if err != nil {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"error": "Account not found",
+		})
+	}
+
+	p := presenter{
+		Id:             account.Id,
+		DocumentNumber: account.DocumentNumber,
+	}
+
+	return c.Status(fiber.StatusOK).JSON(p)
 }

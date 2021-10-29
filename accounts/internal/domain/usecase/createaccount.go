@@ -9,7 +9,7 @@ import (
 type (
 	//CreateAccountUseCase receives a creation request and return a response
 	CreateAccountUseCase struct {
-		accountRepository repository.Account
+		accountRepository repository.AccountWriteOnly
 	}
 
 	//CreateAccountRequest is the request object to be used in the CreateAccountUseCase
@@ -19,7 +19,7 @@ type (
 )
 
 //NewCreateAccountUseCase builds CreateAccountUseCase with its dependencies
-func NewCreateAccountUseCase(accountRepository repository.Account) CreateAccountUseCase {
+func NewCreateAccountUseCase(accountRepository repository.AccountWriteOnly) CreateAccountUseCase {
 	return CreateAccountUseCase{accountRepository: accountRepository}
 }
 
