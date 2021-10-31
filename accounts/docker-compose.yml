@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: accounts
+      MYSQL_USER: example
+      MYSQL_PASSWORD: secret123
+      MYSQL_ROOT_PASSWORD: secret123
+    ports:
+      - "3306:3306"
