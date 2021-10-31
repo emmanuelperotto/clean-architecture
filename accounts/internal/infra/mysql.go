@@ -33,8 +33,8 @@ func ConnectMySQLDB() (db *sql.DB, err error) {
 	}
 
 	db.SetConnMaxLifetime(3 * time.Minute)
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
+	db.SetMaxOpenConns(50)
+	db.SetMaxIdleConns(50)
 
 	return
 }

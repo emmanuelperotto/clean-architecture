@@ -3,7 +3,9 @@ package usecase
 import (
 	"accounts/internal/domain/entity"
 	"accounts/internal/domain/repository"
+	"context"
 	"errors"
+	"time"
 )
 
 type (
@@ -33,5 +35,9 @@ func (c CreateAccountUseCase) Call(request CreateAccountRequest) (entity.Account
 		DocumentNumber: request.DocumentNumber,
 	}
 
-	return c.accountRepository.Save(account)
+	//FIXME: Adjust timeouts (friendly errors and assign to right package)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	return c.accountRepository.Save(ctx, account)
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"accounts/internal/adapter/database/local"
+	"accounts/internal/adapter/database/mysql"
 	"accounts/internal/adapter/web"
 	"accounts/internal/domain/usecase"
 	"accounts/internal/infra"
@@ -23,8 +23,8 @@ func main() {
 	}(db)
 
 	app := fiber.New()
-	accountWriteOnlyRepository := local.NewAccountWriteOnlyRepository()
-	accountReadOnlyRepository := local.NewAccountReadOnlyRepository()
+	accountWriteOnlyRepository := mysql.NewAccountWriteOnlyRepository(db)
+	accountReadOnlyRepository := mysql.NewAccountReadOnlyRepository(db)
 
 	accountHandler := web.NewAccountHandler(
 		usecase.NewCreateAccountUseCase(accountWriteOnlyRepository),

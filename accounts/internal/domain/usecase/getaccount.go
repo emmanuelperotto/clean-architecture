@@ -3,6 +3,7 @@ package usecase
 import (
 	"accounts/internal/domain/entity"
 	"accounts/internal/domain/repository"
+	"context"
 )
 
 type (
@@ -19,5 +20,5 @@ func NewGetAccountUseCase(accountRepository repository.AccountReadOnly) GetAccou
 
 //ById fetches the account in the repository by its id
 func (g GetAccountUseCase) ById(id int64) (entity.Account, error) {
-	return g.accountRepository.FindById(id)
+	return g.accountRepository.FindById(context.Background(), id)
 }

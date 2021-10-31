@@ -2,6 +2,7 @@ package local
 
 import (
 	"accounts/internal/domain/entity"
+	"context"
 	"errors"
 	"log"
 	"math/rand"
@@ -29,7 +30,7 @@ func NewAccountReadOnlyRepository() AccountReadOnlyRepository {
 }
 
 //Save persists the account entity in memory
-func (r AccountWriteOnlyRepository) Save(account entity.Account) (entity.Account, error) {
+func (r AccountWriteOnlyRepository) Save(_ context.Context, account entity.Account) (entity.Account, error) {
 	account.Id = rand.Int63()
 
 	accountStore = append(accountStore, account)
@@ -41,7 +42,7 @@ func (r AccountWriteOnlyRepository) Save(account entity.Account) (entity.Account
 }
 
 //FindById fetches the account entity in memory given an id
-func (a AccountReadOnlyRepository) FindById(id int64) (entity.Account, error) {
+func (a AccountReadOnlyRepository) FindById(_ context.Context, id int64) (entity.Account, error) {
 	for _, account := range accountStore {
 		if account.Id == id {
 			return account, nil
@@ -49,5 +50,4 @@ func (a AccountReadOnlyRepository) FindById(id int64) (entity.Account, error) {
 	}
 
 	return entity.Account{}, errors.New("account not present")
-
 }
