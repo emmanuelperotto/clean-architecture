@@ -9,16 +9,18 @@ import (
 type (
 	//GetAccountUseCase will fetch account(s) in the repository
 	GetAccountUseCase struct {
-		accountRepository repository.AccountReadOnly
+		repositoryRegistry repository.Registry
 	}
 )
 
 //NewGetAccountUseCase builds GetAccountUseCase with its dependencies
-func NewGetAccountUseCase(accountRepository repository.AccountReadOnly) GetAccountUseCase {
-	return GetAccountUseCase{accountRepository: accountRepository}
+func NewGetAccountUseCase(repositoryRegistry repository.Registry) GetAccountUseCase {
+	return GetAccountUseCase{repositoryRegistry: repositoryRegistry}
 }
 
 //ById fetches the account in the repository by its id
 func (g GetAccountUseCase) ById(id int64) (entity.Account, error) {
-	return g.accountRepository.FindById(context.Background(), id)
+	accRepository := g.repositoryRegistry.AccountReadOnlyRepository()
+
+	return accRepository.FindById(context.Background(), id)
 }

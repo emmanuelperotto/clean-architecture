@@ -2,6 +2,7 @@ package web
 
 import (
 	"accounts/internal/domain/usecase"
+	"context"
 	"github.com/gofiber/fiber/v2"
 	"log"
 	"net/http"
@@ -44,7 +45,7 @@ func (h AccountHandler) CreateAccount(c *fiber.Ctx) error {
 		})
 	}
 
-	account, err := h.createAccountUseCase.Call(usecase.CreateAccountRequest{DocumentNumber: payload.DocumentNumber})
+	account, err := h.createAccountUseCase.Call(context.Background(), usecase.CreateAccountRequest{DocumentNumber: payload.DocumentNumber})
 
 	if err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{

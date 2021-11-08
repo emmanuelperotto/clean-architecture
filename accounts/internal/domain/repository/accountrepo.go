@@ -12,5 +12,5 @@ type AccountReadOnly interface {
 
 // AccountWriteOnly defines the contract to save/update information from Account domain
 type AccountWriteOnly interface {
-	Save(ctx context.Context, account entity.Account) (entity.Account, error)
+	Create(ctx context.Context, account entity.Account) (entity.Account, error)
 }

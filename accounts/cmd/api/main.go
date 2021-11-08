@@ -23,12 +23,11 @@ func main() {
 	}(db)
 
 	app := fiber.New()
-	accountWriteOnlyRepository := mysql.NewAccountWriteOnlyRepository(db)
-	accountReadOnlyRepository := mysql.NewAccountReadOnlyRepository(db)
+	repositoryRegistry := mysql.NewMySQLRepositoryRegistry(db) // Replace with "local.NewLocalRepositoryRegistry()" if you want to test local storage
 
 	accountHandler := web.NewAccountHandler(
-		usecase.NewCreateAccountUseCase(accountWriteOnlyRepository),
-		usecase.NewGetAccountUseCase(accountReadOnlyRepository),
+		usecase.NewCreateAccountUseCase(repositoryRegistry),
+		usecase.NewGetAccountUseCase(repositoryRegistry),
 	)
 
 	app.Post("/accounts", accountHandler.CreateAccount)

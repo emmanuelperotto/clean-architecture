@@ -12,25 +12,15 @@ import (
 var accountStore []entity.Account
 
 type (
-	// AccountWriteOnlyRepository represents in memory write only repository for Account
-	AccountWriteOnlyRepository struct{}
+	// accountWriteOnlyRepository represents in memory write only repository for Account
+	accountWriteOnlyRepository struct{}
 
-	// AccountReadOnlyRepository represents in memory read only repository for Account
-	AccountReadOnlyRepository struct{}
+	// accountReadOnlyRepository represents in memory read only repository for Account
+	accountReadOnlyRepository struct{}
 )
 
-//NewAccountWriteOnlyRepository builds write only repository with its dependencies
-func NewAccountWriteOnlyRepository() AccountWriteOnlyRepository {
-	return AccountWriteOnlyRepository{}
-}
-
-//NewAccountReadOnlyRepository builds read only repository with its dependencies
-func NewAccountReadOnlyRepository() AccountReadOnlyRepository {
-	return AccountReadOnlyRepository{}
-}
-
-//Save persists the account entity in memory
-func (r AccountWriteOnlyRepository) Save(_ context.Context, account entity.Account) (entity.Account, error) {
+//Create persists the account entity in memory
+func (r accountWriteOnlyRepository) Create(_ context.Context, account entity.Account) (entity.Account, error) {
 	account.Id = rand.Int63()
 
 	accountStore = append(accountStore, account)
@@ -42,7 +32,7 @@ func (r AccountWriteOnlyRepository) Save(_ context.Context, account entity.Accou
 }
 
 //FindById fetches the account entity in memory given an id
-func (a AccountReadOnlyRepository) FindById(_ context.Context, id int64) (entity.Account, error) {
+func (r accountReadOnlyRepository) FindById(_ context.Context, id int64) (entity.Account, error) {
 	for _, account := range accountStore {
 		if account.Id == id {
 			return account, nil

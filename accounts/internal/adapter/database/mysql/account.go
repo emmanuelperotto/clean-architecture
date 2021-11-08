@@ -1,56 +1,46 @@
 package mysql
 
 import (
+	"accounts/internal/adapter/database"
 	"accounts/internal/domain/entity"
 	"context"
-	"database/sql"
 	"log"
 )
 
 type (
-	// AccountWriteOnlyRepository represents in memory write only repository for Account
-	AccountWriteOnlyRepository struct {
-		db *sql.DB
+	accountWriteOnlyRepository struct {
+		db database.SQLExecutor
 	}
 
-	// AccountReadOnlyRepository represents in memory read only repository for Account
-	AccountReadOnlyRepository struct {
-		db *sql.DB
+	accountReadOnlyRepository struct {
+		db database.SQLExecutor
 	}
 )
 
-//NewAccountWriteOnlyRepository builds write only repository with its dependencies
-func NewAccountWriteOnlyRepository(db *sql.DB) AccountWriteOnlyRepository {
-	return AccountWriteOnlyRepository{db: db}
+//newAccountWriteOnlyRepository builds write only repository with its dependencies
+func newAccountWriteOnlyRepository(db database.SQLExecutor) accountWriteOnlyRepository {
+	return accountWriteOnlyRepository{db: db}
 }
 
-//NewAccountReadOnlyRepository builds read only repository with its dependencies
-func NewAccountReadOnlyRepository(db *sql.DB) AccountReadOnlyRepository {
-	return AccountReadOnlyRepository{db: db}
+//newAccountReadOnlyRepository builds read only repository with its dependencies
+func newAccountReadOnlyRepository(db database.SQLExecutor) accountReadOnlyRepository {
+	return accountReadOnlyRepository{db: db}
 }
 
-//Save persists the account entity in memory
-func (r AccountWriteOnlyRepository) Save(ctx context.Context, account entity.Account) (entity.Account, error) {
-	tx, err := r.db.BeginTx(ctx, nil)
-	if err != nil {
-		return entity.Account{}, err
-	}
-	defer func(tx *sql.Tx) {
-		_ = tx.Rollback()
-	}(tx)
-
-	result, err := tx.ExecContext(ctx, "INSERT INTO Accounts (DocumentNumber) VALUES (?)", account.DocumentNumber)
+//Create executes INSERT operation into Accounts table
+func (r accountWriteOnlyRepository) Create(ctx context.Context, account entity.Account) (entity.Account, error) {
+	result, err := r.db.ExecContext(ctx, "INSERT INTO Accounts (DocumentNumber) VALUES (?)", account.DocumentNumber)
 	if err != nil {
 		return entity.Account{}, err
 	}
 
 	account.Id, _ = result.LastInsertId()
 
-	return account, tx.Commit()
+	return account, nil
 }
 
-//FindById fetches the account entity in memory given an id
-func (r AccountReadOnlyRepository) FindById(ctx context.Context, id int64) (account entity.Account, err error) {
+//FindById performs a SELECT operation given an account ID
+func (r accountReadOnlyRepository) FindById(ctx context.Context, id int64) (account entity.Account, err error) {
 	row := r.db.QueryRowContext(ctx, "SELECT Account_ID, DocumentNumber FROM Accounts a WHERE a.Account_ID = ?", id)
 
 	var docNumber []byte
