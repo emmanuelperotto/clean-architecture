@@ -12,3 +12,16 @@ services:
       MYSQL_ROOT_PASSWORD: secret123
     ports:
       - "3306:3306"
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"
+      - "4571:4571"
+    environment:
+      - AWS_DEFAULT_REGION=us-east-1
+      - EDGE_PORT=4566
+      - SERVICES=sns
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+#      arn:aws:sns:us-east-1:000000000000:AccountsEvents
