@@ -19,7 +19,7 @@ func NewMySQLRepositoryRegistry(db *sql.DB) repository.Registry {
 	}
 }
 
-//GetAccountReadOnlyRepository returns the repository with its proper dbExecutor
+//AccountReadOnlyRepository returns the repository with its proper dbExecutor
 func (r mySQLRepositoryRegistry) AccountReadOnlyRepository() repository.AccountReadOnly {
 	if r.dbExecutor != nil {
 		return newAccountReadOnlyRepository(r.dbExecutor)
@@ -28,7 +28,7 @@ func (r mySQLRepositoryRegistry) AccountReadOnlyRepository() repository.AccountR
 	return newAccountReadOnlyRepository(r.db)
 }
 
-//GetAccountWriteOnlyRepository returns the repository with its proper dbExecutor
+//AccountWriteOnlyRepository returns the repository with its proper dbExecutor
 func (r mySQLRepositoryRegistry) AccountWriteOnlyRepository() repository.AccountWriteOnly {
 	if r.dbExecutor != nil {
 		return newAccountWriteOnlyRepository(r.dbExecutor)
