@@ -5,6 +5,7 @@ import (
 	"accounts/internal/domain/entity"
 	"context"
 	"log"
+	"strconv"
 )
 
 type (
@@ -34,13 +35,15 @@ func (r accountWriteOnlyRepository) Create(ctx context.Context, account entity.A
 		return entity.Account{}, err
 	}
 
-	account.Id, _ = result.LastInsertId()
+	id, _ := result.LastInsertId()
+
+	account.Id = strconv.FormatInt(id, 10)
 
 	return account, nil
 }
 
 //FindById performs a SELECT operation given an account ID
-func (r accountReadOnlyRepository) FindById(ctx context.Context, id int64) (account entity.Account, err error) {
+func (r accountReadOnlyRepository) FindById(ctx context.Context, id string) (account entity.Account, err error) {
 	row := r.db.QueryRowContext(ctx, "SELECT Account_ID, DocumentNumber FROM Accounts a WHERE a.Account_ID = ?", id)
 
 	var docNumber []byte

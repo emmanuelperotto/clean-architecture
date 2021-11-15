@@ -4,8 +4,8 @@ import (
 	"accounts/internal/domain/entity"
 	"context"
 	"errors"
+	"github.com/google/uuid"
 	"log"
-	"math/rand"
 )
 
 //accountStore stores in memory
@@ -21,7 +21,7 @@ type (
 
 //Create persists the account entity in memory
 func (r accountWriteOnlyRepository) Create(_ context.Context, account entity.Account) (entity.Account, error) {
-	account.Id = rand.Int63()
+	account.Id = uuid.NewString()
 
 	accountStore = append(accountStore, account)
 
@@ -32,7 +32,7 @@ func (r accountWriteOnlyRepository) Create(_ context.Context, account entity.Acc
 }
 
 //FindById fetches the account entity in memory given an id
-func (r accountReadOnlyRepository) FindById(_ context.Context, id int64) (entity.Account, error) {
+func (r accountReadOnlyRepository) FindById(_ context.Context, id string) (entity.Account, error) {
 	for _, account := range accountStore {
 		if account.Id == id {
 			return account, nil

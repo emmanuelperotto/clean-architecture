@@ -20,7 +20,7 @@ type (
 	}
 
 	presenter struct {
-		Id             int64  `json:"id"`
+		Id             string `json:"id"`
 		DocumentNumber string `json:"document_number"`
 	}
 )
@@ -63,14 +63,9 @@ func (h AccountHandler) CreateAccount(c *fiber.Ctx) error {
 
 //GetAccount gets an account by a given id query param
 func (h AccountHandler) GetAccount(c *fiber.Ctx) error {
-	id, err := c.ParamsInt("id")
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Id param is not a number",
-		})
-	}
+	id := c.Params("id")
 
-	account, err := h.getAccountUseCase.ById(int64(id))
+	account, err := h.getAccountUseCase.ById(id)
 	if err != nil {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{
 			"error": "Account not found",

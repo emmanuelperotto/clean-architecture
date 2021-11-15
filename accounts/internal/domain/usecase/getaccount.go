@@ -19,7 +19,7 @@ func NewGetAccountUseCase(repositoryRegistry repository.Registry) GetAccountUseC
 }
 
 //ById fetches the account in the repository by its id
-func (g GetAccountUseCase) ById(id int64) (entity.Account, error) {
+func (g GetAccountUseCase) ById(id string) (entity.Account, error) {
 	accRepository := g.repositoryRegistry.AccountReadOnlyRepository()
 
 	return accRepository.FindById(context.Background(), id)
